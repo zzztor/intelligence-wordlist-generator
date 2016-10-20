@@ -1,6 +1,7 @@
 import time
 start = time.clock()
 
+import ConfigParser
 import itertools
 
 def all_perms(itemList):
@@ -10,10 +11,8 @@ def all_perms(itemList):
   for i in range (1,n+1):
     for perm in itertools.permutations(itemList,i):
       for connector in connectors:
-        for tail in tails:
           str = ''
           str += connector.join(perm)
-          str += tail
           perms.append(str)
   return perms
 
@@ -39,12 +38,15 @@ def to_file(filename, wordlist):
   f.close()
   print "Saving wordlist ("+str(lines)+" words) to "+filename+"."
 
-# TODO args CLI or .cfg
+Config = ConfigParser.ConfigParser()
+Config.read("config.cfg")
+
+# TODO add letters replacements to config file 
 leets = [('a','4'),('e','3'),('i','1'),('o','0'),('t','7'),('s','5'),('g','9'),('z','2')]
-items = ['name','username','lastname']
-connectors = ['','_','.','-']
-tails = ['']
-output = 'output.txt'
+items = list(Config.get('Params','keywords').split(','))
+connectors = list(Config.get('Params','connectors').split(','))
+tails = list(Config.get('Params','tails').split(','))
+output = Config.get('Files','output')
 
 m = len(items)
 result = []
@@ -55,49 +57,59 @@ result = []
 
 result.extend(all_perms(items))
 
-# Abbr by element T[ab,cd,ef] -> t[a,cd,ef],t[ab,c,ef],t[ab,cd,e]
-abbr_items = list(items)
-for i in range(0,m):
+if (Config.getboolean('Options','abbreviation')):
+  # Abbr by element T[ab,cd,ef] -> t[a,cd,ef],t[ab,c,ef],t[ab,cd,e]
   abbr_items = list(items)
-  abbr_items[i] = abbr_items[i][0]
-  result.extend(all_perms(abbr_items))
+  for i in range(0,m):
+    abbr_items = list(items)
+    abbr_items[i] = abbr_items[i][0]
+    result.extend(all_perms(abbr_items))
 
-# Abbr acum forward T[ab,cd,ef] -> t[a,cd,ef],t[a,c,ef],t[a,c,e]
-abbr_items = list(items)
-for i in range(0,m):
-  abbr_items[i] = abbr_items[i][0]
-  result.extend(all_perms(abbr_items))
+  # Abbr acum forward T[ab,cd,ef] -> t[a,cd,ef],t[a,c,ef],t[a,c,e]
+  abbr_items = list(items)
+  for i in range(0,m):
+    abbr_items[i] = abbr_items[i][0]
+    result.extend(all_perms(abbr_items))
 
-# Abbr acum backward T[ab,cd,ef] -> t[ab,cd,e],t[ab,c,e],t[a,c,e]
-abbr_items = list(items)
-for i in range(0,m):
-  k = m-i-1
-  abbr_items[k] = abbr_items[k][0]
-  result.extend(all_perms(abbr_items))
-  
-# Reverse by element T[ab,cd,ef] -> t[ba,cd,ef],t[ba,dc,ef],t[ba,dc,fe]
-inv_items = list(items)
-for i in range(0,m):
+  # Abbr acum backward T[ab,cd,ef] -> t[ab,cd,e],t[ab,c,e],t[a,c,e]
+  abbr_items = list(items)
+  for i in range(0,m):
+    k = m-i-1
+    abbr_items[k] = abbr_items[k][0]
+    result.extend(all_perms(abbr_items))
+
+if (Config.getboolean('Options','reverse')):
+  # Reverse by element T[ab,cd,ef] -> t[ba,cd,ef],t[ba,dc,ef],t[ba,dc,fe]
   inv_items = list(items)
-  inv_items[i] = inv_items[i][::-1]
-  result.extend(all_perms(inv_items))
+  for i in range(0,m):
+    inv_items = list(items)
+    inv_items[i] = inv_items[i][::-1]
+    result.extend(all_perms(inv_items))
+    
+  # Reverse acum forward T[ab,cd,ef] -> t[ba,cd,ef],t[ba,dc,ef],t[ba,dc,fe]
+  inv_items = list(items)
+  for i in range(0,m):
+    inv_items[i] = inv_items[i][::-1]
+    result.extend(all_perms(inv_items))
+    
+  # Reverse acum backward T[ab,cd,ef] -> t[ab,cd,fe],t[ab,dc,fe],t[ba,cd,ef]
+  inv_items = list(items)
+  for i in range(0,m):
+    k = m-i-1
+    inv_items[k] = inv_items[k][::-1]
+    result.extend(all_perms(inv_items))
   
-# Reverse acum forward T[ab,cd,ef] -> t[ba,cd,ef],t[ba,dc,ef],t[ba,dc,fe]
-inv_items = list(items)
-for i in range(0,m):
-  inv_items[i] = inv_items[i][::-1]
-  result.extend(all_perms(inv_items))
-  
-# Reverse acum backward T[ab,cd,ef] -> t[ab,cd,fe],t[ab,dc,fe],t[ba,cd,ef]
-inv_items = list(items)
-for i in range(0,m):
-  k = m-i-1
-  inv_items[k] = inv_items[k][::-1]
-  result.extend(all_perms(inv_items))
-
 result = sorted(list(set(result)))
 
-result.extend(leetify(result))
+if (Config.getboolean('Options','l337')):
+  result.extend(leetify(result))
+
+aux = []
+for item in result:
+  for tail in tails:
+    aux.append(item+tail)
+
+result.extend(aux)
 
 #print result
 to_file(output, result)

@@ -19,9 +19,9 @@ def all_perms(itemList):
 def leetify(l): # Medico -> M3d1c0
   leeted = []
   aux = l
-  v = len(leets)
-  # TODO Permutations with leets list: Medico -> M3dico, Med1co, Medic0 and M3d1c0 but never M3d1co, M3dic0, Med1c0
-  for i in leets:
+  v = len(replacements)
+  # TODO Permutations with replacements list: Medico -> M3dico, Med1co, Medic0 and M3d1c0 but never M3d1co, M3dic0, Med1c0
+  for i in replacements:
     aux = [w.replace(i[0], i[1]) for w in aux]
     leeted.extend([w.replace(i[0], i[1]) for w in l])
   leeted.extend(aux)
@@ -41,17 +41,19 @@ def to_file(filename, wordlist):
 Config = ConfigParser.ConfigParser()
 Config.read("config.cfg")
 
-# TODO add letters replacements to config file 
-leets = [('a','4'),('e','3'),('i','1'),('o','0'),('t','7'),('s','5'),('g','9'),('z','2')]
+replacements = Config.items('Replacements');
 items = list(Config.get('Params','keywords').split(','))
 connectors = list(Config.get('Params','connectors').split(','))
+num_tails = list(Config.get('Params','num_tails').split(','))
 tails = list(Config.get('Params','tails').split(','))
+min_lenght = Config.get('Options','min_length')
+max_lenght = Config.get('Options','max_length')
 output = Config.get('Files','output')
 
 m = len(items)
 result = []
 
-# TODO Extend input items with similar words
+# TODO Extend input items with similar words that they can be found in dictionaries or password dictionaries
 # Language dictionaries -> ftp.funet.fi/pub/unix/security/passwd/crack/dictionaries/
 # Comparing words -> http://stackoverflow.com/questions/18871706/check-if-two-words-are-related-to-each-other
 
@@ -101,17 +103,26 @@ if (Config.getboolean('Options','reverse')):
   
 result = sorted(list(set(result)))
 
-if (Config.getboolean('Options','l337')):
+if (Config.getboolean('Options','string_replacements')):
   result.extend(leetify(result))
 
+# Add pretails and tails
 aux = []
 for item in result:
   for tail in tails:
-    aux.append(item+tail)
-
+    for pretail in num_tails:
+      if "-" in pretail:
+        limits = pretail.split('-')
+        for x in range(int(limits[0]),int(limits[1])+1):
+          aux.append(item+str(x)+tail)
+      else:
+        aux.append(item+pretail+tail)
+        
 result.extend(aux)
 
-#print result
+# Filter by length
+result = [elem for elem in result if (len(elem) > int(min_lenght) and len(elem) < int(max_lenght))]
+
 to_file(output, result)
 
 end = time.clock()

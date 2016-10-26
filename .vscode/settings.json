@@ -1,0 +1,4 @@
+// Coloque su configuración en este archivo para sobrescribir la configuración predeterminada y de usuario.
+{
+    "python.linting.pylintPath": "C:/Python27/Scripts/pylint.bat"
+}

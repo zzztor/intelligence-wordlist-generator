@@ -20,7 +20,6 @@ def leetify(l): # Medico -> M3d1c0
   leeted = []
   aux = l
   v = len(replacements)
-  # TODO Permutations with replacements list: Medico -> M3dico, Med1co, Medic0 and M3d1c0 but never M3d1co, M3dic0, Med1c0
   for i in replacements:
     aux = [w.replace(i[0], i[1]) for w in aux]
     leeted.extend([w.replace(i[0], i[1]) for w in l])
@@ -52,10 +51,6 @@ output = Config.get('Files','output')
 
 m = len(items)
 result = []
-
-# TODO Extend input items with similar words that they can be found in dictionaries or password dictionaries
-# Language dictionaries -> ftp.funet.fi/pub/unix/security/passwd/crack/dictionaries/
-# Comparing words -> http://stackoverflow.com/questions/18871706/check-if-two-words-are-related-to-each-other
 
 result.extend(all_perms(items))
 
@@ -121,7 +116,7 @@ for item in result:
 result.extend(aux)
 
 # Tolowercase
-if (Config.getboolean('Options','case_sensitive')):
+if (Config.getboolean('Options','to_lower')):
   aux = []
   for item in result:
     aux.append(item.lower())

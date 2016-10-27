@@ -1,4 +1,4 @@
-# Word list generator
+# Intelligence Wordlist Generator
 
 ## About
 WLGEN pretends to be something between crunch and CUPP. Permutations are based on a list of keywords and then you can add different options (connectors,abbreviations, reverse, replacements ...) to extend the final wordlist.
@@ -24,9 +24,10 @@ This options will **extend** our wordlist generated with `[Params]` section.
 - `output`: Output file name.
 
 ## TODO
-### Extend input items (`keywords` list) with similar words that they can be found in dictionaries or password dictionaries. Docum.:
-- Language dictionaries -> ftp.funet.fi/pub/unix/security/passwd/crack/dictionaries/
-- Comparing words -> http://stackoverflow.com/questions/18871706/check-if-two-words-are-related-to-each-other
-### Improve permutations with replacements list: i.e. `Medico` -> Will output `M3dico, Med1co, Medic0 and M3d1c0` but never `M3d1co, M3dic0, Med1c0`
-### Allow several replacements for same character: i.e. `a = 4,@`
-### to_uppercase
+- Extend input items (`keywords` list) with similar words that they can be found in dictionaries or password dictionaries. Docum.:
+    - Language dictionaries -> ftp.funet.fi/pub/unix/security/passwd/crack/dictionaries/
+    - Passowrd dictionaries -> https://wiki.skullsecurity.org/index.php?title=Passwords
+    - Comparing words -> http://stackoverflow.com/questions/18871706/check-if-two-words-are-related-to-each-other
+- Improve permutations with replacements list: i.e. `Medico` -> Will output `M3dico, Med1co, Medic0 and M3d1c0` but never `M3d1co, M3dic0, Med1c0`
+- Allow several replacements for same character: i.e. `a = 4,@`
+- to_uppercase

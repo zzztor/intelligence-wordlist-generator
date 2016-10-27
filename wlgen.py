@@ -120,6 +120,13 @@ for item in result:
         
 result.extend(aux)
 
+# Tolowercase
+if (Config.getboolean('Options','case_sensitive')):
+  aux = []
+  for item in result:
+    aux.append(item.lower())
+  result.extend(aux)
+
 # Filter by length
 result = [elem for elem in result if (len(elem) > int(min_lenght) and len(elem) < int(max_lenght))]
 

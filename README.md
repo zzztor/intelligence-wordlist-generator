@@ -17,6 +17,7 @@ This options will **extend** our wordlist generated with `[Params]` section.
 - `string_replacements` (bool): If true we will replace strings defined in `[Replacements]` section for each element of `keywords` param. i.e. `hello` -> `h3ll0`
 - `abbreviation` (bool): If true we will use elements abbreviations of `keywords` param. i.e. `hello` -> `h`
 - `reverse` (bool): If true we will reverse elements of `keywords`. i.e. `hello` -> `olleh`
+- `case_sensitive` (bool): If true we will duplicate all elements and use `.lower()` in all duplicated elements.
 - `min_length` and `max_length` (num): We filter result list by length element.
 
 ### Files

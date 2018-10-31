@@ -38,6 +38,8 @@ def to_file(filename, wordlist):
   f.close()
   print "Saving wordlist ("+str(lines)+" words) to "+filename+"."
 
+Config = ConfigParser.ConfigParser()
+
 parser = optparse.OptionParser("usage %prog "+\
 		"-c <configfile> -o <outputfile>")
 parser.add_option('-c', dest='confname', type='string',\
@@ -46,14 +48,13 @@ parser.add_option('-o', dest='outputname', type='string',\
 			help='specify output filename')
 (options, arg) = parser.parse_args()
 if (options.confname == None) | (options.outputname == None):
-	print parser.usage
-	exit(0)
+	confname = 'config.cfg'
+	Config.read(confname)
+	outputname = Config.get('Files', 'output')
 else:
 	confname = options.confname
 	outputname = options.outputname
-
-Config = ConfigParser.ConfigParser()
-Config.read(confname)
+	Config.read(confname)
 
 replacements = Config.items('Replacements');
 items = list(Config.get('Params','keywords').split(','))

@@ -3,10 +3,19 @@
 ## About
 WLGEN pretends to be something between crunch and CUPP. Permutations are based on a list of keywords and then you can add different options (connectors,abbreviations, reverse, replacements ...) to extend the final wordlist.
 
-## Use
-There are seceral options in `config.cfg`:
+## Usage
+You can simply execute the following command to serve the purpose immediately. The default `config.cfg` will be the source of configuration and the `output.txt` will be created after the execution as a result. 
+`$ python iwlgen.py`
 
-### Params
+You can also set your custom configuration filename instead of using `config.cfg` and set the output filename as well.
+`$ python iwlgen.py -c <config_filename> -o <output_filename>`
+For example
+`$ python iwlgen.py -c myconfig.cfg -o myoutput.cfg`
+
+When using the parameters please use `-c` and `-o` parameters altogether, otherwise the script will use the default setting.
+
+### Configuration
+The following settings can be configured through `config.cfg`:
 - `keywords` (list): Main list to permutate.
 - `connectors` (list): For each permutation we will use this list to concatenate keywords.
 - `num_tails` (list): For each permutation we will add (at the end of the string) a number (`10`) or a range of numbers (`20-40`)
